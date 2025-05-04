@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: monio
+  datasource:
+    url: jdbc:postgresql://${LOCATION}:${PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  docker:
+    compose:
+      enabled: true
+  flyway:
+    enabled: true
+    # Folder containing migration scripts
+    locations: classpath:db/migration
+    # Use if you are setting up Flyway in an existing database
+    baseline-on-migrate: true
+    # Allow migrations to be applied out of order if needed
+    out-of-order: true
+    # Define schemas for migrations if needed
+    schemas: public
+
+# Uncomment to enable debug logging
+#logging:
+#  level:
+#    root: debug
