@@ -16,7 +16,7 @@ public class AppSecurityDetail implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(AppSecurityRole.ROLE_USER.name()));
+        return List.of(new SimpleGrantedAuthority(AppSecurityRole.APP_USER.name()));
     }
 
     @Override

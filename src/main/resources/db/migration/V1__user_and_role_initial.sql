@@ -5,9 +5,9 @@ CREATE SCHEMA IF NOT EXISTS "user";
 
 -- Create an enum type for security roles
 CREATE TYPE "user".app_security_role AS ENUM (
-    'ROLE_USER',
-    'ROLE_ADMIN',
-    'ROLE_SUPER_ADMIN'
+    'APP_USER',
+    'APP_ADMIN',
+    'APP_SUPER_ADMIN'
 );
 
 -- Create a security_role table
@@ -72,7 +72,7 @@ $$ LANGUAGE plpgsql;
 
 -- Insert security roles
 INSERT INTO "user".security_role (id, name, description) VALUES
-(gen_random_uuid(), 'ROLE_USER', 'Regular application user with standard privileges'),
-(gen_random_uuid(), 'ROLE_ADMIN', 'Administrator with administrative application access'),
-(gen_random_uuid(), 'ROLE_SUPER_ADMIN', 'The Boss :)');
+(gen_random_uuid(), 'APP_USER', 'Regular application user with standard privileges'),
+(gen_random_uuid(), 'APP_ADMIN', 'Administrator with administrative application access'),
+(gen_random_uuid(), 'APP_SUPER_ADMIN', 'The Boss :)');
 

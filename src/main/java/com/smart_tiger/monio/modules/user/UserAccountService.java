@@ -30,7 +30,7 @@ public class UserAccountService {
         UserAccount resultEntity = repo.save(userAccount);
 
         return repo.findById(resultEntity.getId())
-                .orElseThrow(() -> new ResourceCouldNotCreated(dto.getUserName()))
+                .orElseThrow(() -> new ResourceCouldNotCreated(dto.getUsername()))
                 .getId();
     }
 

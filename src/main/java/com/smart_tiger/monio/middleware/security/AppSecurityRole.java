@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum AppSecurityRole {
-    ROLE_USER("ROLE_USER"),
-    ROLE_ADMIN("ROLE_ADMIN"),
-    ROLE_SUPER_ADMIN("ROLE_SUPER_ADMIN");
+    APP_USER("APP_USER"),
+    APP_ADMIN("APP_ADMIN"),
+    APP_SUPER_ADMIN("APP_SUPER_ADMIN");
 
     @Getter
     private final String name;

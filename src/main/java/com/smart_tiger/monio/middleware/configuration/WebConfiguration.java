@@ -1,7 +1,6 @@
 package com.smart_tiger.monio.middleware.configuration;
 
 import com.smart_tiger.monio.middleware.security.AppSecurityDetailService;
-import com.smart_tiger.monio.middleware.security.AppSecurityRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +22,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
+import static com.smart_tiger.monio.middleware.security.AppSecurityRole.APP_USER;
+
 @RequiredArgsConstructor
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
@@ -38,7 +39,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .withDefaultPasswordEncoder()
                 .username("superadmin")
                 .password("password")
-                .roles(AppSecurityRole.ROLE_USER.toString())
+                .roles(APP_USER.toString())
                 .build();
 
         return new InMemoryUserDetailsManager(user);

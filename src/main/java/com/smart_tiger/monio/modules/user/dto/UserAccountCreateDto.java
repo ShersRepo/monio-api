@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 public class UserAccountCreateDto {
 
-    private String userName;
+    private String username;
     private String firstName;
     private String lastName;
     private String email;
