@@ -1,6 +1,7 @@
 package com.smart_tiger.monio.modules.user.login;
 
 import com.smart_tiger.monio.middleware.response.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse response) {
-        return ok(authenticationService.logoutUser(response));
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request, HttpServletResponse response) {
+        return ok(authenticationService.logoutUser(request, response));
     }
 
 }

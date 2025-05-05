@@ -21,7 +21,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String COOKIE_NAME = "AUTH_TOKEN";
+    public static final String COOKIE_AUTH_NAME = "AUTH_TOKEN";
     private final UserAccountRepository userRepo;
     private final JwtTokenProvider tokenProvider;
     private final Set<String> exemptRequestURI;
@@ -52,11 +52,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return exemptRequestURI.contains(request.getRequestURI());
     }
 
-    private Optional<String> getTokenFromCookie(HttpServletRequest request) {
+    public static Optional<String> getTokenFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (COOKIE_NAME.equals(cookie.getName())) {
+                if (COOKIE_AUTH_NAME.equals(cookie.getName())) {
                     return Optional.of(cookie.getValue());
                 }
             }

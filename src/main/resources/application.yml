@@ -6,8 +6,10 @@ jwt:
     key-password: ${KEY_PASSWORD}
 
 spring:
+
   application:
     name: monio
+
   datasource:
     url: jdbc:postgresql://${LOCATION}:${PORT}/${DB_NAME}
     username: ${DB_USER}
@@ -19,9 +21,23 @@ spring:
       idle-timeout: 300000
       connection-timeout: 20000
       max-lifetime: 1200000
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${REDIS_PASSWORD}
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
   docker:
     compose:
       enabled: true
+
   flyway:
     enabled: true
     # Folder containing migration scripts
@@ -32,6 +48,8 @@ spring:
     out-of-order: true
     # Define schemas for migrations if needed
     schemas: public
+
+
 
 logging:
   pattern:

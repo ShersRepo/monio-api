@@ -1,5 +1,6 @@
 package com.smart_tiger.monio.middleware.security.session;
 
+import com.smart_tiger.monio.middleware.exception.SessionTerminatedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -20,6 +22,7 @@ import static com.smart_tiger.monio.middleware.security.SecurityConstants.JWT_EX
 public class JwtTokenProvider {
 
     private final JwtKeyManager keyManager;
+    private final JwtTokenBlackListService blacklistService;
 
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
@@ -28,6 +31,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(Date.from(now))
+                .issuer("monio-api")
                 .expiration(Date.from(now.plus(JWT_EXPIRATION_MINUTES, ChronoUnit.MINUTES)))
                 .header().add("kid", keyManager.getCurrentKeyAlias())
                 .and()
@@ -35,13 +39,31 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Authentication validateToken(String token) {
+    public Authentication validateToken(String token) throws SecurityException, SessionTerminatedException {
+        if (blacklistService.isTokenBlackListed(token)) {
+            throw new SessionTerminatedException("Session has been terminated by the application");
+        }
         try {
             Claims claims = getTokenClaim(token);
             String userName = claims.getSubject();
             return new UsernamePasswordAuthenticationToken(userName, null, null);
         } catch (JwtException e) {
             throw new SecurityException("Invalid JWT token", e);
+        }
+    }
+
+    public void invalidateToken(String token) {
+        try {
+            Claims claims = getTokenClaim(token);
+            Date expiration = claims.getExpiration();
+            if (expiration != null) {
+                Duration timeToLive = Duration.between(Instant.now(), expiration.toInstant());
+                if (!timeToLive.isNegative()) {
+                    blacklistService.blackListToken(token, timeToLive);
+                }
+            }
+        } catch (JwtException e) {
+            throw new JwtException("Unable to invalidate JWT token: " + token + " due to: " + e.getMessage(), e);
         }
     }
 
