@@ -1,49 +1,46 @@
 package com.smart_tiger.monio.middleware.configuration;
 
 import com.smart_tiger.monio.middleware.security.AppSecurityDetailService;
+import com.smart_tiger.monio.middleware.security.Encoder;
+import com.smart_tiger.monio.middleware.security.authentication.JwtAuthenticationFilter;
+import com.smart_tiger.monio.middleware.security.authentication.JwtTokenProvider;
+import com.smart_tiger.monio.modules.user.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
+import java.util.Set;
 
-import static com.smart_tiger.monio.middleware.security.AppSecurityRole.APP_USER;
+import static com.smart_tiger.monio.middleware.configuration.WebCorsConfiguration.corsConfigurationSource;
 
 @RequiredArgsConstructor
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
     private final AppSecurityDetailService userSecurityService;
-
-    /**
-     * Configuration for basic authentication requirement
-     */
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User
-                .withDefaultPasswordEncoder()
-                .username("superadmin")
-                .password("password")
-                .roles(APP_USER.toString())
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
+    private final JwtTokenProvider tokenProvider;
+    private final Encoder encoder;
+    private final UserAccountRepository userAccountRepository;
+    private static final Set<String> exemptJwtEndpoints = Set.of(
+            "/api/auth/login",
+            "/api/auth/logout",
+            "/api/user/create"
+    );
 
     /**
      * Configuration for No Authentication and temporary testing
@@ -52,15 +49,33 @@ public class WebConfiguration implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)  // Deny frame embedding and prevents clickjacking attacks
+                        .contentTypeOptions(Customizer.withDefaults()) // Enables and Prevents MIME-type sniffing
+                        .contentSecurityPolicy(csp -> csp
+                                .policyDirectives("default-src 'self'; " +
+                                        "script-src 'self'; " +
+                                        "style-src 'self'; " +
+                                        "img-src 'self'; " +
+                                        "frame-src 'none';"
+                                ))
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow all requests without authentication
+                        .requestMatchers(
+                                exemptJwtEndpoints.toArray(String[]::new)
+                        )
+                        .permitAll()
+                        .anyRequest().authenticated() // Allow all requests without authentication
                 )
-                .cors(c -> c.configurationSource(getCORSConfig()))
-                .userDetailsService(userDetailsService())
-                .formLogin(Customizer.withDefaults())
+                .exceptionHandling(exc -> exc
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
+                .cors(c -> c.configurationSource(corsConfigurationSource()))
+                .userDetailsService(userSecurityService)
                 .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .addFilterBefore(new JwtAuthenticationFilter(userAccountRepository, tokenProvider, exemptJwtEndpoints), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -69,17 +84,15 @@ public class WebConfiguration implements WebMvcConfigurer {
         configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class));
     }
 
-    // Define CORS configuration source
-    private UrlBasedCorsConfigurationSource getCORSConfig() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // Allow specific origin
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH")); // Allow HTTP methods
-        config.setAllowedHeaders(List.of("Content-Type", "Authorization")); // Allow specific headers
-        config.setAllowCredentials(true); // Allow cookies or credentials if needed
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Apply CORS rules to all endpoints
-        return source;
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userSecurityService)
+                .passwordEncoder(encoder.passwordEncoder())
+                .and()
+                .build();
     }
+
+
 
 }

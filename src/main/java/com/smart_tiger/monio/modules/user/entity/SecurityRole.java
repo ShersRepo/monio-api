@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "security_role", schema = "user")
+@Table(name = "security_role", schema = "user_acc")
 @Data
 public final class SecurityRole implements GrantedAuthority, Serializable {
 

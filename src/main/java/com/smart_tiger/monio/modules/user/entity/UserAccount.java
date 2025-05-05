@@ -15,7 +15,7 @@ import java.util.UUID;
  * User stored in the DB table
  */
 @Entity
-@Table(name = "user_account", schema = "user")
+@Table(name = "user_account", schema = "user_acc")
 @Data
 public final class UserAccount implements Serializable {
 
@@ -66,6 +66,7 @@ public final class UserAccount implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
+            schema = "user_acc",
             name = "user_security_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")

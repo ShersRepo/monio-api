@@ -31,12 +31,12 @@ public class AppSecurityDetail implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return userAccount.isEnabled() && null != userAccount.getExpiryDate();
+        return !userAccount.isExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return userAccount.isLocked();
+        return !userAccount.isLocked();
     }
 
     @Override

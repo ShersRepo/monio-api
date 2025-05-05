@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class AppSecurityDetailService implements UserDetailsService {
 
     private final UserAccountRepository userRepo;
+    private final Encoder encoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -20,4 +21,5 @@ public class AppSecurityDetailService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new AppSecurityDetail(result);
     }
+
 }

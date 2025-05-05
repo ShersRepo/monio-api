@@ -1,5 +1,6 @@
 package com.smart_tiger.monio.modules.user;
 
+import com.smart_tiger.monio.middleware.exception.ResourceAlreadyExistsException;
 import com.smart_tiger.monio.middleware.exception.ResourceCouldNotCreated;
 import com.smart_tiger.monio.middleware.exception.ResourceNotFoundException;
 import com.smart_tiger.monio.middleware.security.Encoder;
@@ -22,16 +23,21 @@ public class UserAccountService {
 
     @Transactional
     public UUID createUserAccount(UserAccountCreateDto dto) {
-        dto.setPassword(encoder.passwordEncoder().encode(dto.getPassword()));
-        UserAccount userAccount = mapper.createDtoToEntity(dto);
-        userAccount.setEnabled(true);
-        userAccount.setLocked(false);
-        userAccount.setCredentialsExpired(false);
-        UserAccount resultEntity = repo.save(userAccount);
+        if (repo.findByUsername(dto.getUsername()).isPresent()) {
+            throw new ResourceAlreadyExistsException(dto.getUsername());
+        } else {
+            dto.setPassword(encoder.passwordEncoder().encode(dto.getPassword()));
 
-        return repo.findById(resultEntity.getId())
-                .orElseThrow(() -> new ResourceCouldNotCreated(dto.getUsername()))
-                .getId();
+            UserAccount userAccount = mapper.createDtoToEntity(dto);
+            userAccount.setEnabled(true);
+            userAccount.setLocked(false);
+            userAccount.setCredentialsExpired(false);
+            UserAccount resultEntity = repo.save(userAccount);
+
+            return repo.findById(resultEntity.getId())
+                    .orElseThrow(() -> new ResourceCouldNotCreated(dto.getUsername()))
+                    .getId();
+        }
     }
 
     public UserAccountDto getUserAccount(String userName) {

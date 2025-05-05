@@ -21,17 +21,23 @@ public class UserAccountController {
 
     private final UserAccountService userAccountService;
 
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ApiResponse<Void>> createUserAccount(@RequestBody UserAccountCreateDto userAccount) {
         String entityId = userAccountService.createUserAccount(userAccount).toString();
         return created(create("user/" + entityId))
                 .body(okWithoutDataResponse("User Account setup"));
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("{username}")
     public ResponseEntity<ApiResponse<UserAccountDto>> getUserAccount(@PathVariable String username) {
         return status(OK)
                 .body(okFetch(userAccountService.getUserAccount(username)));
+    }
+
+    @GetMapping("authenticated")
+    public ResponseEntity<ApiResponse<Void>> test() {
+        return status(OK)
+                .body(okWithoutDataResponse("Test"));
     }
 
 }
