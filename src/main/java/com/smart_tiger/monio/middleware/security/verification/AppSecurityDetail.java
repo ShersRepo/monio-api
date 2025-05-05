@@ -1,4 +1,4 @@
-package com.smart_tiger.monio.middleware.security;
+package com.smart_tiger.monio.middleware.security.verification;
 
 import com.smart_tiger.monio.modules.user.entity.UserAccount;
 import lombok.RequiredArgsConstructor;

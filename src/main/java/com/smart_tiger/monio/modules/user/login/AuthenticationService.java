@@ -2,8 +2,8 @@ package com.smart_tiger.monio.modules.user.login;
 
 import com.smart_tiger.monio.middleware.response.ApiResponse;
 import com.smart_tiger.monio.middleware.response.SuccessResponseType;
-import com.smart_tiger.monio.middleware.security.authentication.CookieProvider;
-import com.smart_tiger.monio.middleware.security.authentication.JwtTokenProvider;
+import com.smart_tiger.monio.middleware.security.session.CookieProvider;
+import com.smart_tiger.monio.middleware.security.session.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,4 +1,4 @@
-package com.smart_tiger.monio.middleware.security.authentication;
+package com.smart_tiger.monio.middleware.security.session;
 
 import com.smart_tiger.monio.middleware.exception.JwtStorageFailureException;
 import com.smart_tiger.monio.middleware.exception.JwtTokenRotationException;

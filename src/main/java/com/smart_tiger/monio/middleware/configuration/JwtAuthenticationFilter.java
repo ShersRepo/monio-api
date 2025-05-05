@@ -1,5 +1,6 @@
-package com.smart_tiger.monio.middleware.security.authentication;
+package com.smart_tiger.monio.middleware.configuration;
 
+import com.smart_tiger.monio.middleware.security.session.JwtTokenProvider;
 import com.smart_tiger.monio.modules.user.UserAccountRepository;
 import com.smart_tiger.monio.modules.user.entity.UserAccount;
 import jakarta.servlet.FilterChain;

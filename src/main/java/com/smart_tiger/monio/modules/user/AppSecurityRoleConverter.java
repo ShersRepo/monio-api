@@ -1,6 +1,6 @@
 package com.smart_tiger.monio.modules.user;
 
-import com.smart_tiger.monio.middleware.security.AppSecurityRole;
+import com.smart_tiger.monio.middleware.security.verification.AppSecurityRole;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

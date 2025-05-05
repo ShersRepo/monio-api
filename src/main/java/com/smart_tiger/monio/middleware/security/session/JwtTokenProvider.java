@@ -1,4 +1,4 @@
-package com.smart_tiger.monio.middleware.security.authentication;
+package com.smart_tiger.monio.middleware.security.session;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

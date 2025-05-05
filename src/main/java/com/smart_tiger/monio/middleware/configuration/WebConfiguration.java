@@ -1,9 +1,8 @@
 package com.smart_tiger.monio.middleware.configuration;
 
-import com.smart_tiger.monio.middleware.security.AppSecurityDetailService;
+import com.smart_tiger.monio.middleware.security.verification.AppSecurityDetailService;
 import com.smart_tiger.monio.middleware.security.Encoder;
-import com.smart_tiger.monio.middleware.security.authentication.JwtAuthenticationFilter;
-import com.smart_tiger.monio.middleware.security.authentication.JwtTokenProvider;
+import com.smart_tiger.monio.middleware.security.session.JwtTokenProvider;
 import com.smart_tiger.monio.modules.user.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
