@@ -11,7 +11,7 @@ spring:
     name: monio
 
   datasource:
-    url: jdbc:postgresql://${LOCATION}:${PORT}/${DB_NAME}
+    url: jdbc:postgresql://${DB_LOCATION}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -24,9 +24,12 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
-      password: ${REDIS_PASSWORD}
+      timeout: 2000ms  # Connection timeout
+      connect-timeout: 2000ms  # Client connection timeout
+      ssl:
+        enabled: false  # Enable if using SSL
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
       lettuce:
         pool:
           max-active: 8
