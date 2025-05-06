@@ -7,10 +7,12 @@ import com.smart_tiger.monio.modules.user.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -35,7 +37,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     private final JwtTokenProvider tokenProvider;
     private final Encoder encoder;
     private final UserAccountRepository userAccountRepository;
-    private static final Set<String> exemptJwtEndpoints = Set.of(
+    private static final Set<String> exemptJwtPOSTEndpoints = Set.of(
             "/api/auth/login",
             "/api/auth/logout",
             "/api/user/create"
@@ -61,7 +63,8 @@ public class WebConfiguration implements WebMvcConfigurer {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                exemptJwtEndpoints.toArray(String[]::new)
+                                HttpMethod.POST,
+                                exemptJwtPOSTEndpoints.toArray(new String[0])
                         )
                         .permitAll()
                         .anyRequest().authenticated() // Allow all requests without authentication
@@ -74,7 +77,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(userAccountRepository, tokenProvider, exemptJwtEndpoints), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(userAccountRepository, tokenProvider, exemptJwtPOSTEndpoints), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -84,14 +87,11 @@ public class WebConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userSecurityService)
-                .passwordEncoder(encoder.passwordEncoder())
-                .and()
-                .build();
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userSecurityService);
+        authProvider.setPasswordEncoder(encoder.passwordEncoder());
+        return new ProviderManager(authProvider);
     }
-
-
 
 }
