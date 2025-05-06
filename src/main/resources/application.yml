@@ -6,6 +6,8 @@ jwt:
     key-password: ${KEY_PASSWORD}
 
 spring:
+  profiles:
+    active: dev
 
   application:
     name: monio
