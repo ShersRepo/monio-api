@@ -1,4 +1,4 @@
-package com.smart_tiger.monio.modules.user.login;
+package com.smart_tiger.monio.modules.authentication;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class AuthenticationDto {
+public class AuthenticationDetailsDto {
 
     @NotNull
     @NotBlank

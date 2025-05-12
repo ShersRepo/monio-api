@@ -4,6 +4,7 @@ import com.smart_tiger.monio.middleware.exception.ResourceAlreadyExistsException
 import com.smart_tiger.monio.middleware.exception.ResourceCouldNotCreated;
 import com.smart_tiger.monio.middleware.exception.ResourceNotFoundException;
 import com.smart_tiger.monio.middleware.security.Encoder;
+import com.smart_tiger.monio.modules.user.constant.UserAccountStatus;
 import com.smart_tiger.monio.modules.user.dto.UserAccountCreateDto;
 import com.smart_tiger.monio.modules.user.dto.UserAccountDto;
 import com.smart_tiger.monio.modules.user.entity.UserAccount;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +32,11 @@ public class UserAccountService {
             dto.setPassword(encoder.passwordEncoder().encode(dto.getPassword()));
 
             UserAccount userAccount = mapper.createDtoToEntity(dto);
-            userAccount.setEnabled(true);
-            userAccount.setLocked(false);
+
             userAccount.setCredentialsExpired(false);
+            userAccount.setStatus(UserAccountStatus.VERIFICATION_PENDING);
+            userAccount.setVerificationPendingStartDate(now());
+            userAccount.setCreatedDate(now());
             UserAccount resultEntity = repo.save(userAccount);
 
             return repo.findById(resultEntity.getId())
@@ -40,7 +45,7 @@ public class UserAccountService {
         }
     }
 
-    public UserAccountDto getUserAccount(String userName) {
+    public UserAccountDto getUserAccount(String userName) throws ResourceNotFoundException {
         return repo.findByUsername(userName)
                 .map(mapper::entityToDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Resource not found"));

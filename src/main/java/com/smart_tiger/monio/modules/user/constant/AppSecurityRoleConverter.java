@@ -1,4 +1,4 @@
-package com.smart_tiger.monio.modules.user;
+package com.smart_tiger.monio.modules.user.constant;
 
 import com.smart_tiger.monio.middleware.security.verification.AppSecurityRole;
 import jakarta.persistence.AttributeConverter;

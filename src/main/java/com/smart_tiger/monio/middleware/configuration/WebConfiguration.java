@@ -38,9 +38,9 @@ public class WebConfiguration implements WebMvcConfigurer {
     private final Encoder encoder;
     private final UserAccountRepository userAccountRepository;
     private static final Set<String> exemptJwtPOSTEndpoints = Set.of(
-            "/api/auth/login",
-            "/api/auth/logout",
-            "/api/user/create"
+            "/api/user",
+            "/api/auth",
+            "/api/auth/logout"
     );
 
     /**

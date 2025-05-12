@@ -11,6 +11,7 @@ public enum ValidationFailure {
     INVALID_LENGTH("Field is an invalid length"),
     EMAIL("Field must be a valid email address"),
     PASSWORD("Field must meet the password complexity requirements"),
+    POSITIVE("Field must be a positive number"),
     SOMETHING_WENT_WRONG("An unexpected error occurred");
 
     private String message;

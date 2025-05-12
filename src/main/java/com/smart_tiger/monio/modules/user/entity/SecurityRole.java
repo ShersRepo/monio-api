@@ -1,7 +1,7 @@
 package com.smart_tiger.monio.modules.user.entity;
 
 import com.smart_tiger.monio.middleware.security.verification.AppSecurityRole;
-import com.smart_tiger.monio.modules.user.AppSecurityRoleConverter;
+import com.smart_tiger.monio.modules.user.constant.AppSecurityRoleConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

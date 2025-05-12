@@ -55,6 +55,18 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Status Code - 401
+     *
+     * @param ex Request was not authorised and therefore could not be processed
+     * @return Response with exception
+     */
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ApiResponse<Void>> securityIssueRaisedDuringOperation(SecurityException ex) {
+        ApiResponse<Void> apiResponse = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), "Unable to perform this action", null, null);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
+    }
+
+    /**
      * Status Code - 409
      *
      * @param ex Exception for resources that had a conflict and therefore could not be processed
@@ -102,7 +114,7 @@ public class GlobalExceptionHandler {
     /**
      * Status Code - 409
      *
-     * @param ex Failed MOST likely due to dependent resources. TODO precisely implement in the services
+     * @param ex Failed MOST likely due to dependent resources.
      * @return Response with exception
      */
     @ExceptionHandler(ResourceCouldNotBeDeletedException.class)
@@ -110,5 +122,6 @@ public class GlobalExceptionHandler {
         ApiResponse<Void> apiResponse = new ApiResponse<>(HttpStatus.CONFLICT.value(), ex.getMessage(), null, null);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
     }
+
 
 }

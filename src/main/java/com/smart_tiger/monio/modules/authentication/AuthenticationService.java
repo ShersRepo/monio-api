@@ -1,4 +1,4 @@
-package com.smart_tiger.monio.modules.user.login;
+package com.smart_tiger.monio.modules.authentication;
 
 import com.smart_tiger.monio.middleware.response.ApiResponse;
 import com.smart_tiger.monio.middleware.response.SuccessResponseType;
@@ -26,13 +26,13 @@ public class AuthenticationService {
 
     public ApiResponse<Void> authenticateRequestUser(
             HttpServletResponse response,
-            AuthenticationDto authenticationDto
+            AuthenticationDetailsDto authenticationDetailsDto
     ) throws AuthenticationException {
         // Authenticate the user
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authenticationDto.getUsername(),
-                        authenticationDto.getPassword()
+                        authenticationDetailsDto.getUsername(),
+                        authenticationDetailsDto.getPassword()
                 )
         );
 

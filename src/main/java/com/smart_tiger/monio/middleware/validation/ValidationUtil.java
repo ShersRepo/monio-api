@@ -22,11 +22,17 @@ public class ValidationUtil {
 
         if (errorCodes.contains("notnull")) {
             return ValidationFailure.NOT_NULL;
-        } else if (errorCodes.contains("notblank")) {
+        }
+        else if (errorCodes.contains("notblank")) {
             return ValidationFailure.NOT_BLANK;
-        } else if (errorCodes.contains("size")) {
+        }
+        else if (errorCodes.contains("size")) {
             return ValidationFailure.INVALID_LENGTH;
-        } else {
+        }
+        else if (errorCodes.contains("positiveorzero")) {
+            return ValidationFailure.POSITIVE;
+        }
+        else {
             return ValidationFailure.SOMETHING_WENT_WRONG;
         }
     }

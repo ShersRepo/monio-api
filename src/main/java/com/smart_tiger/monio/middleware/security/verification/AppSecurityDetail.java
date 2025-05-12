@@ -1,5 +1,6 @@
 package com.smart_tiger.monio.middleware.security.verification;
 
+import com.smart_tiger.monio.modules.user.constant.UserAccountStatus;
 import com.smart_tiger.monio.modules.user.entity.UserAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,22 +32,22 @@ public class AppSecurityDetail implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !userAccount.isExpired();
+        return !userAccount.getStatus().equals(UserAccountStatus.CLOSED);
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !userAccount.isLocked();
+        return !userAccount.getStatus().equals(UserAccountStatus.LOCKED);
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !userAccount.isCredentialsExpired();
+        return !userAccount.getStatus().equals(UserAccountStatus.CREDENTIAL_EXPIRED);
     }
 
     @Override
     public boolean isEnabled() {
-        return userAccount.isEnabled();
+        return !userAccount.getStatus().equals(UserAccountStatus.DISABLED);
     }
 
 }

@@ -3,6 +3,7 @@ package com.smart_tiger.monio.modules.user;
 import com.smart_tiger.monio.middleware.response.ApiResponse;
 import com.smart_tiger.monio.modules.user.dto.UserAccountCreateDto;
 import com.smart_tiger.monio.modules.user.dto.UserAccountDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,15 +15,15 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.status;
 
-@RestController()
+@RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserAccountController {
 
     private final UserAccountService userAccountService;
 
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<Void>> createUserAccount(@RequestBody UserAccountCreateDto userAccount) {
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> createUserAccount(@Valid @RequestBody UserAccountCreateDto userAccount) {
         String entityId = userAccountService.createUserAccount(userAccount).toString();
         return created(create("user/" + entityId))
                 .body(okWithoutDataResponse("User Account setup"));

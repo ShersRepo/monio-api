@@ -1,4 +1,4 @@
-package com.smart_tiger.monio.modules.user.login;
+package com.smart_tiger.monio.modules.authentication;
 
 import com.smart_tiger.monio.middleware.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,9 +22,9 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/login")
+    @PostMapping
     public ResponseEntity<ApiResponse<Void>> login(
-            @Valid @RequestBody AuthenticationDto loginRequest,
+            @Valid @RequestBody AuthenticationDetailsDto loginRequest,
             HttpServletResponse response
     ) {
         try {
