@@ -1,39 +1,34 @@
 package com.smart_tiger.monio.modules.ledger.fiscalitem;
 
 import com.smart_tiger.monio.modules.ledger.Ledger;
-import com.smart_tiger.monio.modules.ledger.constant.Currency;
-import com.smart_tiger.monio.modules.ledger.constant.CurrencyConverter;
-import com.smart_tiger.monio.modules.ledger.constant.FiscalItemStatus;
 import com.smart_tiger.monio.modules.ledger.fiscaleventrules.FiscalRecurrenceRule;
 import com.smart_tiger.monio.modules.user.entity.UserAccount;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "fiscal_item", schema = "ledger")
+@Table(name = "fiscal_draft_item", schema = "ledger")
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class FiscalItem implements Serializable {
+public class FiscalDraftItem {
 
     @Serial
-    private static final long serialVersionUID = -3059016358839147194L;
+    private static final long serialVersionUID = 3559561284045248240L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, length = 100)
-    @NotBlank
+    @Column(nullable = false, length = 400)
     private String name;
 
     @Column(length = 400)
@@ -42,17 +37,6 @@ public class FiscalItem implements Serializable {
     @PositiveOrZero
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
-
-    @Column(length = 3)
-    @Convert(converter = CurrencyConverter.class)
-    private Currency currency;
-
-    @Column(name = "status", nullable = false, length = 75)
-    @Convert(converter = FiscalItemStatus.class, attributeName = "status")
-    private FiscalItemStatus status;
-
-    @Column(name = "is_expenditure", nullable = false)
-    private boolean expenditure;
 
     @Column(name = "start_date")
     private LocalDateTime startDate;
@@ -71,18 +55,5 @@ public class FiscalItem implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private UserAccount createdBy;
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (!(o instanceof FiscalItem that)) return false;
-        return getId() != null && Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public final int hashCode() {
-        return getId() != null ? getId().hashCode() : 31;
-    }
 
 }

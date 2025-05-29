@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.joda.time.LocalDateTime;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -42,6 +43,15 @@ public class FiscalItemDto {
     private boolean expenditure;
 
     @NotNull
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    @NotNull
     private UUID ledgerId;
+
+    private boolean requiresShiftToAfterWeekend;
+
+    private boolean requiresShiftToBeforeWeekend;
 
 }

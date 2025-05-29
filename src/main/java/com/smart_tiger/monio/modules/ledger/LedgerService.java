@@ -5,7 +5,6 @@ import com.smart_tiger.monio.middleware.exception.ResourceNotFoundException;
 import com.smart_tiger.monio.middleware.security.SecurityContextService;
 import com.smart_tiger.monio.modules.ledger.dto.LedgerCreateDto;
 import com.smart_tiger.monio.modules.ledger.dto.LedgerDto;
-import com.smart_tiger.monio.modules.ledger.fiscalitem.FiscalItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +16,9 @@ import static java.util.Collections.emptyList;
 @RequiredArgsConstructor
 public class LedgerService {
 
+    public static final String MESSAGE_UNABLE_TO_FIND_LEDGER = "Unable to find ledger";
     private final LedgerRepository repo;
     private final LedgerMapper mapper;
-    private final FiscalItemMapper fiscalMapper;
     private final SecurityContextService contextService;
 
     public LedgerDto createLedger(LedgerCreateDto dto) throws NotAuthorisedException {
@@ -32,14 +31,21 @@ public class LedgerService {
 
     public LedgerDto fetchLedger(UUID ledgerId) throws ResourceNotFoundException {
         Ledger ledger = repo.findById(ledgerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Unable to find ledger"));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE_UNABLE_TO_FIND_LEDGER));
 
         return mapper.entityToDto(ledger);
     }
 
     public LedgerDto fetchLedgerWithFiscalItems(UUID ledgerId) throws ResourceNotFoundException {
         Ledger ledger = repo.findWithFiscalItemsById(ledgerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Unable to find ledger"));
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE_UNABLE_TO_FIND_LEDGER));
+
+        return mapper.entityToDto(ledger);
+    }
+
+    public LedgerDto fetchUsersLedgerWithFiscalItems(UUID userId) throws ResourceNotFoundException {
+        Ledger ledger = repo.findWithFiscalItemsByCreatedBy(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(MESSAGE_UNABLE_TO_FIND_LEDGER));
 
         return mapper.entityToDto(ledger);
     }

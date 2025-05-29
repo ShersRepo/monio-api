@@ -4,6 +4,8 @@ import com.smart_tiger.monio.middleware.response.ApiResponse;
 import com.smart_tiger.monio.middleware.response.SuccessResponseType;
 import com.smart_tiger.monio.middleware.security.session.CookieProvider;
 import com.smart_tiger.monio.middleware.security.session.JwtTokenProvider;
+import com.smart_tiger.monio.modules.user.UserAccountService;
+import com.smart_tiger.monio.modules.user.dto.UserAccountDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class AuthenticationService {
     private final CookieProvider cookieProvider;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+    private final UserAccountService service;
+    private final UserAccountService userAccountService;
 
     public ApiResponse<Void> authenticateRequestUser(
             HttpServletResponse response,
@@ -55,6 +59,16 @@ public class AuthenticationService {
         SecurityContextHolder.clearContext();
 
         return SuccessResponseType.okWithoutDataResponse("Logged out successfully");
+    }
+
+    public ApiResponse<UserAccountDto> refreshUser(HttpServletRequest request) {
+        String username = tokenProvider.getUsernameFromToken(
+                getTokenFromCookie(request).orElseThrow(
+                        () -> new IllegalStateException("No JWT token found")
+                )
+        );
+
+        return SuccessResponseType.okFetch(userAccountService.getUserAccount(username));
     }
 
 

@@ -1,16 +1,14 @@
 package com.smart_tiger.monio.modules.authentication;
 
 import com.smart_tiger.monio.middleware.response.ApiResponse;
+import com.smart_tiger.monio.modules.user.dto.UserAccountDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.ResponseEntity.ok;
@@ -45,6 +43,11 @@ public class AuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request, HttpServletResponse response) {
         return ok(authenticationService.logoutUser(request, response));
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<UserAccountDto>> refreshUser(HttpServletRequest request) {
+        return ok(authenticationService.refreshUser(request));
     }
 
 }

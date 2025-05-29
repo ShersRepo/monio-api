@@ -11,4 +11,8 @@ import java.util.UUID;
 public interface LedgerRepository extends JpaRepository<Ledger, UUID> {
     @EntityGraph(attributePaths = {"fiscalItems"})
     Optional<Ledger> findWithFiscalItemsById(UUID id);
+
+    @EntityGraph(attributePaths = {"fiscalItems"})
+    Optional<Ledger> findWithFiscalItemsByCreatedBy(UUID id);
+
 }
