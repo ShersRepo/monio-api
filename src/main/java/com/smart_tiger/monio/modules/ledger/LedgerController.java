@@ -59,7 +59,7 @@ public class LedgerController {
         return ok(okFetch(ledgerService.fetchLedgerWithFiscalItems(ledgerId)));
     }
 
-    @GetMapping("/{userId}/with-fiscal")
+    @GetMapping("/{userId}/with-fiscal-for-user")
     public ResponseEntity<ApiResponse<LedgerDto>> handleGetUsersLedgerWithFiscalItems(@Valid @PathVariable UUID userId) {
         return ok(okFetch(ledgerService.fetchUsersLedgerWithFiscalItems(userId)));
     }
