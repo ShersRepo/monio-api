@@ -12,18 +12,29 @@ import java.util.UUID;
 @Setter
 public class FiscalItemDraftDto {
 
-    @NotNull @NotBlank
+    @NotNull
     private UUID ledgerId;
+
+    @NotNull
     private UUID id;
+
+    @NotNull
+    @NotBlank
     private String name;
+
     @Size(max = 400)
     private String description;
+
     @PositiveOrZero @Digits(integer = 19, fraction = 2)
     private BigDecimal amount;
+
     @NotNull
     private boolean expenditure;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
+
     private UUID createdBy;
 
 }

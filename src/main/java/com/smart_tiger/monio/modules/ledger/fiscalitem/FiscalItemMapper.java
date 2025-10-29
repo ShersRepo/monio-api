@@ -1,6 +1,7 @@
 package com.smart_tiger.monio.modules.ledger.fiscalitem;
 
 import com.smart_tiger.monio.modules.ledger.dto.FiscalItemCreateDto;
+import com.smart_tiger.monio.modules.ledger.dto.FiscalItemDraftDto;
 import com.smart_tiger.monio.modules.ledger.dto.FiscalItemDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -16,6 +17,14 @@ public interface FiscalItemMapper {
     FiscalItemDto entityToDto(FiscalItem entity);
 
     FiscalItem dtoToEntity(FiscalItemDto dto);
+
+    @Mapping(target = "createdBy", ignore = true)
+    FiscalDraftItem draftDtoToEntity(FiscalItemDraftDto dto);
+
+    FiscalDraftItem createDtoToDraftEntity(FiscalItemCreateDto dto);
+
+    @Mapping(target = "createdBy", ignore = true)
+    FiscalItemDraftDto draftEntityToDto(FiscalDraftItem entity);
 
     @AfterMapping
     default FiscalItemDto afterMapping(FiscalItem source, @MappingTarget FiscalItemDto target) {

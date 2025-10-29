@@ -2,10 +2,7 @@ package com.smart_tiger.monio.modules.ledger;
 
 import com.smart_tiger.monio.middleware.exception.NotAuthorisedException;
 import com.smart_tiger.monio.middleware.response.ApiResponse;
-import com.smart_tiger.monio.modules.ledger.dto.FiscalItemCreateDto;
-import com.smart_tiger.monio.modules.ledger.dto.FiscalItemDto;
-import com.smart_tiger.monio.modules.ledger.dto.LedgerCreateDto;
-import com.smart_tiger.monio.modules.ledger.dto.LedgerDto;
+import com.smart_tiger.monio.modules.ledger.dto.*;
 import com.smart_tiger.monio.modules.ledger.fiscalitem.FiscalItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +38,16 @@ public class LedgerController {
             @PathVariable UUID ledgerId
     ) throws NotAuthorisedException {
         FiscalItemDto createdResult = fiscalItemService.createFiscalItem(dto, ledgerId);
+        return created(URI.create("/api/ledger/fiscal/" + createdResult.getId().toString()))
+                .body(created(createdResult));
+    }
+
+    @PostMapping("/{ledgerId}/fiscal-draft")
+    public ResponseEntity<ApiResponse<FiscalItemDraftDto>> handleCreateDraftItem(
+            @Valid @RequestBody FiscalItemCreateDto dto,
+            @PathVariable UUID ledgerId
+    ) throws NotAuthorisedException {
+        FiscalItemDraftDto createdResult = fiscalItemService.createDraftFiscalItem(dto, ledgerId);
         return created(URI.create("/api/ledger/fiscal/" + createdResult.getId().toString()))
                 .body(created(createdResult));
     }

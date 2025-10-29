@@ -38,6 +38,9 @@ public class FiscalDraftItem {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
 
+    @Column(name = "is_expenditure", nullable = false)
+    private boolean expenditure;
+
     @Column(name = "start_date")
     private LocalDateTime startDate;
 

@@ -1,15 +1,3 @@
--- V1__initial_schema.sql
-
-BEGIN;
-
-CREATE SCHEMA ledger;
-CREATE SCHEMA user_acc;
-CREATE SCHEMA audit;
-
-COMMENT ON SCHEMA ledger IS 'Contains all financial and ledger related entities';
-COMMENT ON SCHEMA user_acc IS 'Contains user management and security related entities';
-COMMENT ON SCHEMA audit IS 'Audit logs for transactions and activities';
-
 CREATE TABLE user_acc.security_role
 (
     id          UUID         NOT NULL,
@@ -96,21 +84,6 @@ CREATE TABLE ledger.ledger
     CONSTRAINT pk_ledger PRIMARY KEY (id)
 );
 
-CREATE TABLE ledger.fiscal_draft_item
-(
-    id                 UUID           NOT NULL,
-    name               VARCHAR(100),
-    description        VARCHAR(400),
-    amount             DECIMAL(19, 2) NOT NULL,
-    is_expenditure     BOOLEAN        NOT NULL,
-    start_date         TIMESTAMP WITHOUT TIME ZONE,
-    end_date           TIMESTAMP WITHOUT TIME ZONE,
-    recurrence_rule_id UUID,
-    ledger_id          UUID           NOT NULL,
-    created_by         UUID           NOT NULL,
-    CONSTRAINT pk_fiscal_draft_item PRIMARY KEY (id)
-);
-
 ALTER TABLE ledger.fiscal_item
     ADD CONSTRAINT uc_fiscal_item_recurrence_rule UNIQUE (recurrence_rule_id);
 
@@ -122,15 +95,3 @@ ALTER TABLE ledger.fiscal_item
 
 ALTER TABLE ledger.fiscal_item
     ADD CONSTRAINT FK_FISCAL_ITEM_ON_RECURRENCE_RULE FOREIGN KEY (recurrence_rule_id) REFERENCES ledger.fiscal_recurrence_rule (id);
-
-ALTER TABLE ledger.fiscal_draft_item
-    ADD CONSTRAINT uc_fiscal_draft_item_recurrence_rule UNIQUE (recurrence_rule_id);
-
-ALTER TABLE ledger.fiscal_draft_item
-    ADD CONSTRAINT FK_FISCAL_DRAFT_ITEM_ON_CREATED_BY FOREIGN KEY (created_by) REFERENCES user_acc.user_account (id);
-
-ALTER TABLE ledger.fiscal_draft_item
-    ADD CONSTRAINT FK_FISCAL_DRAFT_ITEM_ON_LEDGER FOREIGN KEY (ledger_id) REFERENCES ledger.ledger (id);
-
-
-COMMIT;

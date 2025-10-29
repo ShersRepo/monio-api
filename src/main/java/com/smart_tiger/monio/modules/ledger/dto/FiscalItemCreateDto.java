@@ -1,7 +1,6 @@
 package com.smart_tiger.monio.modules.ledger.dto;
 
 import com.smart_tiger.monio.modules.ledger.constant.Currency;
-import com.smart_tiger.monio.modules.ledger.constant.FiscalItemStatus;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +26,6 @@ public class FiscalItemCreateDto {
     private BigDecimal amount;
 
     private Currency currency;
-
-    @NotNull
-    private FiscalItemStatus status;
 
     @NotNull
     private boolean expenditure;
