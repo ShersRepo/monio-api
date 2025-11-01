@@ -1,0 +1,57 @@
+jwt:
+  keystore:
+    store-location: classpath:test-keystore.jceks
+    password: test-password
+    key-alias: test-alias
+    key-password: test-password
+
+spring:
+  profiles:
+    active: test
+
+  application:
+    name: monio-test
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+
+  data:
+    redis:
+      timeout: 2000ms
+      connect-timeout: 2000ms
+      ssl:
+        enabled: false
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+  docker:
+    compose:
+      enabled: false
+
+  flyway:
+    enabled: false
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  level:
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    com.smart_tiger.monio: DEBUG

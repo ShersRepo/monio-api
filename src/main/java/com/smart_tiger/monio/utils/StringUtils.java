@@ -1,6 +1,6 @@
 package com.smart_tiger.monio.utils;
 
-public class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {
     }

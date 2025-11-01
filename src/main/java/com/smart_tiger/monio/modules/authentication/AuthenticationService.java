@@ -25,7 +25,6 @@ public class AuthenticationService {
     private final CookieProvider cookieProvider;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
-    private final UserAccountService service;
     private final UserAccountService userAccountService;
 
     public ApiResponse<Void> authenticateRequestUser(

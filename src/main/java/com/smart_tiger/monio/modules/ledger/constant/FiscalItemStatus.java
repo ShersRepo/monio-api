@@ -2,7 +2,7 @@ package com.smart_tiger.monio.modules.ledger.constant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.smart_tiger.monio.utils.EnumWithConverter;
+import com.smart_tiger.monio.utils.EnumConverterUtil;
 import com.smart_tiger.monio.utils.WithDtoValue;
 
 public enum FiscalItemStatus implements WithDtoValue {
@@ -16,6 +16,7 @@ public enum FiscalItemStatus implements WithDtoValue {
         this.status = status;
     }
 
+    @Override
     @JsonValue
     public String getDtoValue() {
         return status;
@@ -23,7 +24,7 @@ public enum FiscalItemStatus implements WithDtoValue {
 
     @JsonCreator
     public static FiscalItemStatus fromString(String value) throws IllegalArgumentException {
-        return EnumWithConverter.fromString(FiscalItemStatus.class, value);
+        return EnumConverterUtil.fromString(FiscalItemStatus.class, value);
     }
 
 }

@@ -7,6 +7,7 @@ import com.smart_tiger.monio.modules.ledger.dto.LedgerCreateDto;
 import com.smart_tiger.monio.modules.ledger.dto.LedgerDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -21,14 +22,15 @@ public class LedgerService {
     private final LedgerMapper mapper;
     private final SecurityContextService contextService;
 
+    @Transactional
     public LedgerDto createLedger(LedgerCreateDto dto) throws NotAuthorisedException {
         Ledger ledger = mapper.createDtoToEntity(dto);
-        ledger.setNotes(emptyList());
         ledger.setFiscalItems(emptyList());
         ledger.setCreatedBy(contextService.getCurrentUserId());
         return mapper.entityToDto(repo.save(ledger));
     }
 
+    @Transactional(readOnly = true)
     public LedgerDto fetchLedger(UUID ledgerId) throws ResourceNotFoundException {
         Ledger ledger = repo.findById(ledgerId)
                 .orElseThrow(() -> new ResourceNotFoundException(MESSAGE_UNABLE_TO_FIND_LEDGER));
@@ -36,6 +38,7 @@ public class LedgerService {
         return mapper.entityToDto(ledger);
     }
 
+    @Transactional(readOnly = true)
     public LedgerDto fetchLedgerWithFiscalItems(UUID ledgerId) throws ResourceNotFoundException {
         Ledger ledger = repo.findWithFiscalItemsById(ledgerId)
                 .orElseThrow(() -> new ResourceNotFoundException(MESSAGE_UNABLE_TO_FIND_LEDGER));
@@ -43,6 +46,7 @@ public class LedgerService {
         return mapper.entityToDto(ledger);
     }
 
+    @Transactional(readOnly = true)
     public LedgerDto fetchUsersLedgerWithFiscalItems(UUID userId) throws ResourceNotFoundException {
         Ledger ledger = repo.findWithFiscalItemsByCreatedBy(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(MESSAGE_UNABLE_TO_FIND_LEDGER));

@@ -5,7 +5,7 @@ import com.smart_tiger.monio.middleware.exception.BadRequestException;
 
 import java.util.UUID;
 
-public class UUIDUtils {
+public final class UUIDUtils {
 
     private UUIDUtils() {
     }
