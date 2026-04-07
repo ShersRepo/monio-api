@@ -7,9 +7,10 @@ import com.smart_tiger.monio.modules.ledger.fiscalitem.FiscalItemService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Tag("UnitTest")
+@ExtendWith(MockitoExtension.class)
 class LedgerControllerTest {
 
     private MockMvc mockMvc;
@@ -48,7 +50,6 @@ class LedgerControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(ledgerController)
                 .setControllerAdvice(new com.smart_tiger.monio.middleware.exception.GlobalExceptionHandler())
                 .build();
@@ -83,6 +84,8 @@ class LedgerControllerTest {
                 .content(objectMapper.writeValueAsString(testLedgerCreateDto)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/ledger/" + testLedgerDto.getId().toString()))
+                .andExpect(jsonPath("$.status").value(201))
+                .andExpect(jsonPath("$.message").value("Created"))
                 .andExpect(jsonPath("$.data.id").value(testLedgerDto.getId().toString()))
                 .andExpect(jsonPath("$.data.name").value(testLedgerDto.getName()));
     }
@@ -97,6 +100,8 @@ class LedgerControllerTest {
                 .content(objectMapper.writeValueAsString(testFiscalItemCreateDto)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/ledger/fiscal/" + testFiscalItemDto.getId().toString()))
+                .andExpect(jsonPath("$.status").value(201))
+                .andExpect(jsonPath("$.message").value("Created"))
                 .andExpect(jsonPath("$.data.id").value(testFiscalItemDto.getId().toString()))
                 .andExpect(jsonPath("$.data.name").value(testFiscalItemDto.getName()));
     }
@@ -111,6 +116,8 @@ class LedgerControllerTest {
                 .content(objectMapper.writeValueAsString(testFiscalItemCreateDto)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/ledger/fiscal/" + testFiscalItemDraftDto.getId().toString()))
+                .andExpect(jsonPath("$.status").value(201))
+                .andExpect(jsonPath("$.message").value("Created"))
                 .andExpect(jsonPath("$.data.id").value(testFiscalItemDraftDto.getId().toString()))
                 .andExpect(jsonPath("$.data.name").value(testFiscalItemDraftDto.getName()));
     }
@@ -121,6 +128,8 @@ class LedgerControllerTest {
 
         mockMvc.perform(get("/ledger/" + testLedgerId))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("Fetched data"))
                 .andExpect(jsonPath("$.data.id").value(testLedgerDto.getId().toString()))
                 .andExpect(jsonPath("$.data.name").value(testLedgerDto.getName()));
     }
@@ -131,6 +140,8 @@ class LedgerControllerTest {
 
         mockMvc.perform(get("/ledger/" + testLedgerId + "/with-fiscal"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("Fetched data"))
                 .andExpect(jsonPath("$.data.id").value(testLedgerDto.getId().toString()))
                 .andExpect(jsonPath("$.data.name").value(testLedgerDto.getName()));
     }
@@ -141,8 +152,24 @@ class LedgerControllerTest {
 
         mockMvc.perform(get("/ledger/" + testUserId + "/with-fiscal-for-user"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("Fetched data"))
                 .andExpect(jsonPath("$.data.id").value(testLedgerDto.getId().toString()))
                 .andExpect(jsonPath("$.data.name").value(testLedgerDto.getName()));
+    }
+
+    @Test
+    void LedgerController_handleCreateLedger_shouldRejectInvalidPayload() throws Exception {
+        LedgerCreateDto invalidDto = new LedgerCreateDto();
+        invalidDto.setName("");
+
+        mockMvc.perform(post("/ledger")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Invalid request found"))
+                .andExpect(jsonPath("$.errors[0].field").value("name"));
     }
 
     @Test
@@ -153,7 +180,8 @@ class LedgerControllerTest {
         mockMvc.perform(post("/ledger")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testLedgerCreateDto)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401));
     }
 
     @Test
@@ -164,7 +192,8 @@ class LedgerControllerTest {
         mockMvc.perform(post("/ledger/" + testLedgerId + "/fiscal")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testFiscalItemCreateDto)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401));
     }
 
     @Test
@@ -175,7 +204,8 @@ class LedgerControllerTest {
         mockMvc.perform(post("/ledger/" + testLedgerId + "/fiscal-draft")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testFiscalItemCreateDto)))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value(401));
     }
 
 }

@@ -74,8 +74,8 @@ public class FiscalItemService {
             entityToUpdate.setDescription(updateDto.getDescription());
         }
 
+        entityToUpdate.setAmount(updateDto.getAmount());
         entityToUpdate.setExpenditure(updateDto.isExpenditure());
-
         return mapper.draftEntityToDto(draftRepo.save(entityToUpdate));
     }
 

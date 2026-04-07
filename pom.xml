@@ -219,6 +219,7 @@
 							<schemaPaths>
 								<param>src/main/resources/graphql-client</param>
 							</schemaPaths>
+							<outputDir>${project.build.directory}/generated-sources/graphql</outputDir>
 							<packageName>com.smart_tiger.monio.codegen</packageName>
 							<addGeneratedAnnotation>true</addGeneratedAnnotation>
 							<disableDatesInGeneratedAnnotation>true</disableDatesInGeneratedAnnotation>
@@ -238,7 +239,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources</source>
+								<source>${project.build.directory}/generated-sources/graphql</source>
 							</sources>
 						</configuration>
 					</execution>
